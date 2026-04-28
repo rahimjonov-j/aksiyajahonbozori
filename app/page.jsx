@@ -214,18 +214,6 @@ function Cta() {
   );
 }
 
-function MobileFixedCta() {
-  return (
-    <a
-      href={botUrl}
-      aria-label="Aksiyada ishtirok etish"
-      className="mobile-cta-pulse fixed bottom-[calc(0.85rem+env(safe-area-inset-bottom))] right-4 z-50 inline-flex items-center justify-center rounded-full border border-white/15 bg-[linear-gradient(135deg,#34d058,#16a34a,#0f7a34)] px-5 py-4 text-[11px] font-black uppercase tracking-[0.06em] text-white shadow-[0_18px_48px_rgba(22,163,74,0.45)] ring-4 ring-[#16a34a]/15 transition-transform duration-200 active:scale-95 md:hidden"
-    >
-      AKSIYADA QATNASHISH
-    </a>
-  );
-}
-
 function TrustInfo() {
   return (
     <footer className="sticky bottom-0 z-40 -mx-4 mt-10 border-t border-white/10 bg-[#050505]/92 px-4 py-3 text-center text-[11px] font-medium text-[#8f8f8f] backdrop-blur-md sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 md:text-sm">
@@ -266,7 +254,6 @@ export default function Home() {
 
         <TrustInfo />
       </div>
-      <MobileFixedCta />
     </main>
   );
 }
