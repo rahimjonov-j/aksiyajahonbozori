@@ -26,7 +26,7 @@ function Header() {
           </picture>
         </div>
         <span className="truncate text-[9px] font-black uppercase tracking-[0.08em] text-[#d9a520] min-[380px]:text-[10px] md:text-sm md:tracking-[0.12em]">
-          YevroOsiyo - halqaro savdo markazi
+          YevroOsiyo - xalqaro savdo markazi
         </span>
       </div>
     </header>
@@ -54,7 +54,7 @@ function HeroVisual() {
     <section className="w-full min-h-0 lg:col-start-2 lg:row-span-2 lg:row-start-1">
       <div className="relative mx-auto aspect-[16/10] w-full max-w-5xl overflow-hidden rounded-[1.25rem] border border-white/10 bg-[#0b0b0b] shadow-[0_24px_80px_rgba(0,0,0,0.42)] min-[390px]:rounded-[1.5rem] md:aspect-[21/9] md:rounded-[2.2rem] lg:aspect-[16/9] lg:max-w-none">
         <Image
-          src="/optimized/realimg-hero.webp"
+          src="/optimized/newimg-hero.webp"
           alt="BYD Champion avtomobili"
           fill
           priority
@@ -65,10 +65,10 @@ function HeroVisual() {
 
         <div className="absolute left-2.5 top-2.5 rounded-xl border border-[#d9a520]/30 bg-black/45 px-2.5 py-1.5 backdrop-blur-sm md:left-6 md:top-6 md:rounded-2xl md:px-3 md:py-2">
           <p className="text-[9px] font-black uppercase tracking-[0.1em] text-[#edc55e] md:text-xs md:tracking-[0.14em]">
-            Bosh sovg&apos;a
+            Bosh sovrin
           </p>
           <p className="text-[8px] font-semibold text-[#b8b8b8] md:text-xs">
-            BYD Champion
+            BYD avtomobili
           </p>
         </div>
 
