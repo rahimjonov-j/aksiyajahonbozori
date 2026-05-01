@@ -1,4 +1,6 @@
 import Image from "next/image";
+import AnalyticsTracker from "./components/AnalyticsTracker";
+import TelegramCta from "./components/TelegramCta";
 
 const botUrl = "https://t.me/Jaxon_bozor_Bot?start=ref_1256520272";
 
@@ -110,12 +112,7 @@ function TriggerAndTimer() {
 function Cta() {
   return (
     <section className="order-5 flex w-full flex-col items-center gap-2">
-      <a
-        href={botUrl}
-        className="w-full rounded-[1.35rem] bg-[linear-gradient(135deg,#34d058,#16a34a,#0f7a34)] px-5 py-4 text-center text-[13px] font-black uppercase tracking-[0.06em] text-white shadow-[0_18px_44px_rgba(22,163,74,0.38)] transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 animate-pulse min-[380px]:text-sm md:max-w-sm md:py-5 md:text-lg md:tracking-[0.08em]"
-      >
-        AKSIYADA QATNASHISH
-      </a>
+      <TelegramCta href={botUrl} />
       <p className="text-[10px] font-medium text-[#8f8f8f] md:text-xs">
         Telegram orqali ro&apos;yxatdan o&apos;ting
       </p>
@@ -143,6 +140,7 @@ function TrustInfo() {
 export default function Home() {
   return (
     <main className="min-h-[100dvh] bg-[#050505] text-[#f5f5f5]">
+      <AnalyticsTracker />
       <div className="mx-auto flex min-h-[100dvh] w-full max-w-[1280px] flex-col px-4 pt-2 sm:px-6 md:px-8 md:pt-5">
         <Header />
 

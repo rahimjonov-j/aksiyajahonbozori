@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Jahon Bozor Aksiyasi",
+  title: "Jahon Bozor Konkursi",
   description: "Farg'onada BYD Champion yuting!",
   icons: {
     icon: [
