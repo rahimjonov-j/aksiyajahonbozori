@@ -4,7 +4,7 @@ import {
   ANALYTICS_VISITOR_PUBLIC_COOKIE,
   createVisitorId,
   isValidVisitorId,
-  trackTelegramClick,
+  trackTelegramOpenLikely,
 } from "@/lib/analytics";
 
 export const runtime = "nodejs";
@@ -28,7 +28,7 @@ export async function POST(request) {
   const visitorId = existingVisitorId || requestedVisitorId || createVisitorId();
 
   try {
-    await trackTelegramClick(visitorId, {
+    await trackTelegramOpenLikely(visitorId, {
       pathname: payload.pathname,
       referrer: payload.referrer,
       userAgent: request.headers.get("user-agent"),
@@ -47,7 +47,6 @@ export async function POST(request) {
       path: "/",
       maxAge: 60 * 60 * 24 * 365,
     });
-
   }
 
   response.cookies.set({

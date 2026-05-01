@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { getOrCreateClientVisitorId } from "./analytics-client";
 
 const VISIT_DEBOUNCE_MS = 20000;
 
@@ -15,6 +16,7 @@ export default function AnalyticsTracker() {
     }
 
     window.sessionStorage.setItem(storageKey, String(now));
+    const visitorId = getOrCreateClientVisitorId();
 
     void fetch("/api/analytics/visit", {
       method: "POST",
@@ -24,8 +26,10 @@ export default function AnalyticsTracker() {
       cache: "no-store",
       keepalive: true,
       body: JSON.stringify({
+        visitorId,
         pathname: window.location.pathname,
         referrer: document.referrer,
+        search: window.location.search,
       }),
     }).catch(() => {});
   }, []);

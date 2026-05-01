@@ -52,6 +52,10 @@ function getTrendText(todayValue, yesterdayValue, noun) {
   return `Kechagi bilan bir xil ${noun}`;
 }
 
+function getDropOff(clicks, confirmed) {
+  return Math.max(clicks - confirmed, 0);
+}
+
 function SummaryCard({ label, value, helper, tone = "gold" }) {
   const toneClass =
     tone === "green"
@@ -76,29 +80,66 @@ function SummaryCard({ label, value, helper, tone = "gold" }) {
   );
 }
 
-function InsightCard({ title, value, helper }) {
+function InsightCard({ title, value, helper, compact = false }) {
   return (
-    <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
+    <div className="min-w-0 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 sm:p-5">
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d9a520]">
         {title}
       </p>
-      <p className="mt-3 text-2xl font-black text-white">{value}</p>
-      <p className="mt-2 text-sm text-[#9f9f9f]">{helper}</p>
+      <p className="mt-3 whitespace-nowrap text-3xl font-black leading-none text-white sm:text-[2rem]">
+        {value}
+      </p>
+      {!compact ? <p className="mt-2 text-sm text-[#9f9f9f]">{helper}</p> : null}
+    </div>
+  );
+}
+
+function PlatformBreakdownCard({ title, subtitle, items }) {
+  return (
+    <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-[#d9a520]">
+        {title}
+      </p>
+      <h2 className="mt-2 text-2xl font-black text-white">{subtitle}</h2>
+      <div className="mt-5 space-y-3">
+        {items.map((item) => (
+          <div
+            key={item.key}
+            className="flex items-center justify-between rounded-[1.25rem] border border-white/8 bg-black/20 px-4 py-3"
+          >
+            <div>
+              <p className="text-sm font-bold text-white">{item.label}</p>
+              <p className="mt-1 text-xs text-[#8f8f8f]">
+                {item.uniqueVisitors} ta unikal user
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-black text-[#edc55e]">{item.visits}</p>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#8f8f8f]">
+                tashrif
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
 function DailyBarChart({ days }) {
   const maxVisits = Math.max(...days.map((day) => day.visits), 1);
-  const maxTelegram = Math.max(...days.map((day) => day.uniqueTelegramClickers), 1);
+  const maxTelegram = Math.max(
+    ...days.map((day) => day.uniqueTelegramOpenVisitors),
+    1,
+  );
 
   return (
     <div className="space-y-4">
       {days.map((day) => {
         const visitWidth = `${Math.max((day.visits / maxVisits) * 100, day.visits ? 8 : 0)}%`;
         const telegramWidth = `${Math.max(
-          (day.uniqueTelegramClickers / maxTelegram) * 100,
-          day.uniqueTelegramClickers ? 8 : 0,
+          (day.uniqueTelegramOpenVisitors / maxTelegram) * 100,
+          day.uniqueTelegramOpenVisitors ? 8 : 0,
         )}%`;
 
         return (
@@ -115,7 +156,7 @@ function DailyBarChart({ days }) {
               </div>
               <div className="text-right text-xs text-[#9f9f9f]">
                 <p>{day.visits} tashrif</p>
-                <p>{day.uniqueTelegramClickers} ta botga o'tgan</p>
+                <p>{day.uniqueTelegramOpenVisitors} ta Telegram ochilgan</p>
               </div>
             </div>
 
@@ -138,9 +179,11 @@ function DailyBarChart({ days }) {
               <div>
                 <div className="mb-1 flex items-center justify-between text-xs">
                   <span className="font-bold uppercase tracking-[0.14em] text-[#59db79]">
-                    Telegram
+                    Telegram ochildi
                   </span>
-                  <span className="text-[#d7d7d7]">{day.uniqueTelegramClickers}</span>
+                  <span className="text-[#d7d7d7]">
+                    {day.uniqueTelegramOpenVisitors}
+                  </span>
                 </div>
                 <div className="h-2.5 rounded-full bg-white/8">
                   <div
@@ -159,17 +202,42 @@ function DailyBarChart({ days }) {
 
 export default async function AnalyticsPage() {
   const analytics = await getAnalyticsSnapshot();
-  const { summary, last7Days, topReferrers, recentEvents } = analytics;
+  const { summary, last7Days, platformBreakdown } = analytics;
   const today = last7Days.at(-1) ?? {
     day: "",
     visits: 0,
     uniqueVisitors: 0,
     telegramClicks: 0,
     uniqueTelegramClickers: 0,
+    telegramOpenSignals: 0,
+    uniqueTelegramOpenVisitors: 0,
+    telegramConfirmedStarts: 0,
+    uniqueTelegramConfirmedVisitors: 0,
+    sourceBreakdown: {
+      telegram: { visits: 0, uniqueVisitors: 0 },
+      instagram: { visits: 0, uniqueVisitors: 0 },
+      facebook: { visits: 0, uniqueVisitors: 0 },
+      direct: { visits: 0, uniqueVisitors: 0 },
+      other: { visits: 0, uniqueVisitors: 0 },
+    },
   };
   const yesterday = last7Days.at(-2) ?? today;
   const averageDailyVisits = getDailyAverage(last7Days);
   const peakDay = getPeakDay(last7Days);
+  const totalTelegramOpenMiss = getDropOff(
+    summary.uniqueTelegramClickers,
+    summary.uniqueTelegramOpenVisitors,
+  );
+  const todayTelegramOpenMiss = getDropOff(
+    today.uniqueTelegramClickers,
+    today.uniqueTelegramOpenVisitors,
+  );
+  const todayPlatformBreakdown = platformBreakdown.map((platform) => ({
+    key: platform.key,
+    label: platform.label,
+    visits: today.sourceBreakdown?.[platform.key]?.visits ?? 0,
+    uniqueVisitors: today.sourceBreakdown?.[platform.key]?.uniqueVisitors ?? 0,
+  }));
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(217,165,32,0.14),transparent_30%),#050505] px-4 py-8 text-white sm:px-6 lg:px-8">
@@ -199,9 +267,9 @@ export default async function AnalyticsPage() {
             helper={`Oxirgi tashrif: ${formatDateTime(summary.lastVisitAt)}`}
           />
           <SummaryCard
-            label="Telegram botga o'tganlar"
+            label="Telegram tugma bosganlar"
             value={summary.uniqueTelegramClickers}
-            helper={`${summary.totalTelegramClicks} ta umumiy bosish, ${summary.conversionRate}% konversiya`}
+            helper={`${summary.totalTelegramClicks} ta umumiy bosish qayd etildi`}
             tone="green"
           />
           <SummaryCard
@@ -237,9 +305,14 @@ export default async function AnalyticsPage() {
                 helper="Bugun kamida bir marta kirgan alohida userlar"
               />
               <InsightCard
-                title="Bugun TG o'tgan"
+                title="Bugun tugma bosgan"
                 value={`${today.uniqueTelegramClickers} ta`}
-                helper="Bugun Telegram botga o'tgan alohida userlar"
+                helper="Bugun saytdagi Telegram tugmasini bosgan userlar"
+              />
+              <InsightCard
+                title="Bugun Telegram ochildi"
+                value={`${today.uniqueTelegramOpenVisitors} ta`}
+                helper="Tugmadan keyin app/browser almashgan userlar"
               />
               <InsightCard
                 title="Eng faol kun"
@@ -260,9 +333,13 @@ export default async function AnalyticsPage() {
                 Bugun saytga <span className="font-black text-white">{today.visits}</span>{" "}
                 ta tashrif bo'ldi. Shundan{" "}
                 <span className="font-black text-white">
-                  {today.uniqueTelegramClickers}
+                  {today.uniqueTelegramOpenVisitors}
                 </span>{" "}
-                tasi Telegram botga o'tgan.
+                tasi Telegram ochilganga o'xshadi.{" "}
+                <span className="font-black text-white">
+                  {todayTelegramOpenMiss}
+                </span>{" "}
+                tasi esa tugmani bosgan bo'lsa ham Telegram ochilgani kuzatilmadi.
               </p>
             </div>
           </div>
@@ -275,8 +352,8 @@ export default async function AnalyticsPage() {
               Oxirgi 7 kun dinamikasi
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#a8a8a8]">
-              Har bir kunda nechta odam kirgani va nechta odam Telegram botga
-              o'tgani shu yerda ko'rinadi.
+              Har bir kunda nechta odam kirgani va nechta odamda Telegram
+              ochilganga o'xshagan signal bo'lgani shu yerda ko'rinadi.
             </p>
 
             <div className="mt-5">
@@ -285,70 +362,46 @@ export default async function AnalyticsPage() {
           </div>
         </section>
 
-        <section className="mt-6 grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#d9a520]">
-              Trafik manbasi
-            </p>
-            <h2 className="mt-2 text-2xl font-black text-white">
-              Qayerdan kelishyapti
-            </h2>
-            <div className="mt-5 space-y-3">
-              {topReferrers.length > 0 ? (
-                topReferrers.map((entry) => (
-                  <div
-                    key={entry.referrer}
-                    className="flex items-center justify-between rounded-[1.25rem] border border-white/8 bg-black/20 px-4 py-3"
-                  >
-                    <span className="max-w-[75%] truncate text-sm text-[#d7d7d7]">
-                      {entry.referrer}
-                    </span>
-                    <span className="text-sm font-black text-[#edc55e]">
-                      {entry.count}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-[#8f8f8f]">Hozircha ma'lumot yo'q.</p>
-              )}
-            </div>
+        <section className="mt-6 rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#d9a520]">
+            Telegram funnel
+          </p>
+          <h2 className="mt-2 text-2xl font-black text-white">
+            Tugma bosgan va Telegram ochilganlar
+          </h2>
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <InsightCard
+              title="Tugma bosgan"
+              value={`${summary.uniqueTelegramClickers} ta`}
+              helper="Saytdan Telegram tugmasini bosgan userlar"
+              compact
+            />
+            <InsightCard
+              title="Telegram ochilgan"
+              value={`${summary.uniqueTelegramOpenVisitors} ta`}
+              helper="Tugmadan keyin app/browser almashgan ehtimoliy signal"
+              compact
+            />
+            <InsightCard
+              title="Ochilmagan"
+              value={`${totalTelegramOpenMiss} ta`}
+              helper="Tugma bosilgan, lekin Telegram ochilgani kuzatilmagan userlar"
+              compact
+            />
           </div>
+        </section>
 
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#d9a520]">
-              So'nggi harakatlar
-            </p>
-            <h2 className="mt-2 text-2xl font-black text-white">
-              Yaqin activity
-            </h2>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {recentEvents.length > 0 ? (
-                recentEvents.slice(0, 6).map((event, index) => (
-                  <div
-                    key={`${event.visitorId}-${event.happenedAt}-${index}`}
-                    className="rounded-[1.25rem] border border-white/8 bg-black/20 p-4"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-xs font-black uppercase tracking-[0.16em] text-[#edc55e]">
-                        {event.type === "visit" ? "Saytga kirdi" : "Botga o'tdi"}
-                      </span>
-                      <span className="text-[11px] text-[#8f8f8f]">
-                        {formatDateTime(event.happenedAt)}
-                      </span>
-                    </div>
-                    <p className="mt-3 text-sm text-[#d7d7d7]">
-                      Sahifa: {event.pathname}
-                    </p>
-                    <p className="mt-1 truncate text-xs text-[#8f8f8f]">
-                      Manba: {event.referrer}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-[#8f8f8f]">Hali activity yo'q.</p>
-              )}
-            </div>
-          </div>
+        <section className="mt-6 grid gap-6 xl:grid-cols-2">
+          <PlatformBreakdownCard
+            title="Jami platformalar"
+            subtitle="Qaysi kanal qancha odam olib keldi"
+            items={platformBreakdown}
+          />
+          <PlatformBreakdownCard
+            title="Bugungi platformalar"
+            subtitle="Bugun qaysi platformadan qancha kirish bo'ldi"
+            items={todayPlatformBreakdown}
+          />
         </section>
       </div>
     </main>

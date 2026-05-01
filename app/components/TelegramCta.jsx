@@ -1,6 +1,11 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
+import { getOrCreateClientVisitorId } from "./analytics-client";
+
 const CLICK_DEBOUNCE_MS = 3000;
+const OPEN_SIGNAL_WINDOW_MS = 15000;
+const TELEGRAM_PENDING_KEY = "ajb_pending_telegram_open";
 
 function sendTelegramClick(payload) {
   const body = JSON.stringify(payload);
@@ -21,7 +26,103 @@ function sendTelegramClick(payload) {
   }).catch(() => {});
 }
 
-export default function TelegramCta({ href }) {
+function sendTelegramOpenLikely(payload) {
+  const body = JSON.stringify(payload);
+
+  if (navigator.sendBeacon) {
+    const blob = new Blob([body], { type: "application/json" });
+    navigator.sendBeacon("/api/analytics/telegram-open", blob);
+    return;
+  }
+
+  void fetch("/api/analytics/telegram-open", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    keepalive: true,
+    body,
+  }).catch(() => {});
+}
+
+function readPendingOpenSignal() {
+  try {
+    const raw = window.sessionStorage.getItem(TELEGRAM_PENDING_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writePendingOpenSignal(value) {
+  window.sessionStorage.setItem(TELEGRAM_PENDING_KEY, JSON.stringify(value));
+}
+
+export default function TelegramCta({ botUsername, startPrefix }) {
+  const visitorId = useMemo(() => {
+    if (typeof window === "undefined") {
+      return "";
+    }
+
+    return getOrCreateClientVisitorId();
+  }, []);
+
+  const href = useMemo(() => {
+    const startPayload = visitorId
+      ? `${startPrefix}_v_${visitorId}`
+      : startPrefix;
+
+    return `https://t.me/${botUsername}?start=${encodeURIComponent(startPayload)}`;
+  }, [botUsername, startPrefix, visitorId]);
+
+  useEffect(() => {
+    function flushOpenSignal() {
+      const pending = readPendingOpenSignal();
+
+      if (!pending || pending.sent) {
+        return;
+      }
+
+      if (Date.now() - pending.at > OPEN_SIGNAL_WINDOW_MS) {
+        window.sessionStorage.removeItem(TELEGRAM_PENDING_KEY);
+        return;
+      }
+
+      pending.sent = true;
+      writePendingOpenSignal(pending);
+
+      sendTelegramOpenLikely({
+        visitorId: pending.visitorId,
+        pathname: pending.pathname,
+        referrer: pending.referrer,
+      });
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "hidden") {
+        flushOpenSignal();
+      }
+    }
+
+    function handlePageHide() {
+      flushOpenSignal();
+    }
+
+    const pending = readPendingOpenSignal();
+
+    if (pending && Date.now() - pending.at > OPEN_SIGNAL_WINDOW_MS) {
+      window.sessionStorage.removeItem(TELEGRAM_PENDING_KEY);
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handlePageHide);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handlePageHide);
+    };
+  }, []);
+
   function handleClick() {
     const storageKey = "ajb_last_telegram_click_at";
     const now = Date.now();
@@ -33,7 +134,16 @@ export default function TelegramCta({ href }) {
 
     window.localStorage.setItem(storageKey, String(now));
 
+    writePendingOpenSignal({
+      at: now,
+      pathname: window.location.pathname,
+      referrer: document.referrer,
+      visitorId,
+      sent: false,
+    });
+
     sendTelegramClick({
+      visitorId,
       pathname: window.location.pathname,
       referrer: document.referrer,
     });

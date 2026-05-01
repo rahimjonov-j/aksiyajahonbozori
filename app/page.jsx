@@ -2,7 +2,8 @@ import Image from "next/image";
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import TelegramCta from "./components/TelegramCta";
 
-const botUrl = "https://t.me/Jaxon_bozor_Bot?start=ref_1256520272";
+const botUsername = "Jaxon_bozor_Bot";
+const botStartPrefix = "ref_1256520272";
 
 const countdown = [
   { value: "03", label: "kun" },
@@ -112,7 +113,7 @@ function TriggerAndTimer() {
 function Cta() {
   return (
     <section className="order-5 flex w-full flex-col items-center gap-2">
-      <TelegramCta href={botUrl} />
+      <TelegramCta botUsername={botUsername} startPrefix={botStartPrefix} />
       <p className="text-[10px] font-medium text-[#8f8f8f] md:text-xs">
         Telegram orqali ro&apos;yxatdan o&apos;ting
       </p>

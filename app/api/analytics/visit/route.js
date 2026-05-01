@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import {
   ANALYTICS_VISITOR_COOKIE,
+  ANALYTICS_VISITOR_PUBLIC_COOKIE,
   createVisitorId,
+  isValidVisitorId,
   trackVisit,
 } from "@/lib/analytics";
 
@@ -20,12 +22,16 @@ async function readPayload(request) {
 export async function POST(request) {
   const payload = await readPayload(request);
   const existingVisitorId = request.cookies.get(ANALYTICS_VISITOR_COOKIE)?.value;
-  const visitorId = existingVisitorId || createVisitorId();
+  const requestedVisitorId = isValidVisitorId(payload.visitorId)
+    ? payload.visitorId
+    : null;
+  const visitorId = existingVisitorId || requestedVisitorId || createVisitorId();
 
   try {
     await trackVisit(visitorId, {
       pathname: payload.pathname,
       referrer: payload.referrer,
+      search: payload.search,
       userAgent: request.headers.get("user-agent"),
     });
   } catch {}
@@ -42,7 +48,17 @@ export async function POST(request) {
       path: "/",
       maxAge: 60 * 60 * 24 * 365,
     });
+
   }
+
+  response.cookies.set({
+    name: ANALYTICS_VISITOR_PUBLIC_COOKIE,
+    value: visitorId,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+  });
 
   return response;
 }
