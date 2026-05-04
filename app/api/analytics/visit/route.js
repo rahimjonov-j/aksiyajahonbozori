@@ -26,6 +26,7 @@ export async function POST(request) {
     ? payload.visitorId
     : null;
   const visitorId = existingVisitorId || requestedVisitorId || createVisitorId();
+  let trackingError = null;
 
   try {
     await trackVisit(visitorId, {
@@ -34,9 +35,19 @@ export async function POST(request) {
       search: payload.search,
       userAgent: request.headers.get("user-agent"),
     });
-  } catch {}
+  } catch (error) {
+    trackingError = error;
+    console.error("[analytics] visit tracking failed", error);
+  }
 
-  const response = NextResponse.json({ ok: true });
+  const response = trackingError
+    ? NextResponse.json({
+        ok: true,
+        degraded: true,
+        error: trackingError.code ?? "analytics_unavailable",
+        details: trackingError.details ?? null,
+      })
+    : NextResponse.json({ ok: true });
 
   if (!existingVisitorId) {
     response.cookies.set({

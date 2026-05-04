@@ -94,6 +94,37 @@ function InsightCard({ title, value, helper, compact = false }) {
   );
 }
 
+function StorageAlert({ storage }) {
+  if (!storage?.degraded) {
+    return null;
+  }
+
+  return (
+    <section className="mt-6 rounded-[1.75rem] border border-amber-400/25 bg-amber-500/[0.08] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-300">
+        Analytics ogohlantirish
+      </p>
+      <p className="mt-2 text-sm leading-7 text-amber-50">
+        Asosiy storage hozir to'liq ishlamayapti. Panel fallback ma'lumotdan
+        foydalanayotgan bo'lishi mumkin, shuning uchun yangi raqamlar kechikib
+        ko'rinadi.
+      </p>
+      <p className="mt-3 text-xs uppercase tracking-[0.16em] text-amber-200/80">
+        Faol source: {storage.selectedSource}
+      </p>
+      {storage.warnings?.length ? (
+        <div className="mt-3 space-y-2">
+          {storage.warnings.slice(0, 3).map((warning) => (
+            <p key={warning} className="text-sm leading-6 text-amber-100/90">
+              {warning}
+            </p>
+          ))}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 function PlatformBreakdownCard({ title, subtitle, items }) {
   return (
     <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
@@ -202,7 +233,7 @@ function DailyBarChart({ days }) {
 
 export default async function AnalyticsPage() {
   const analytics = await getAnalyticsSnapshot();
-  const { summary, last7Days, platformBreakdown } = analytics;
+  const { summary, last7Days, platformBreakdown, storage } = analytics;
   const today = last7Days.at(-1) ?? {
     day: "",
     visits: 0,
@@ -259,6 +290,8 @@ export default async function AnalyticsPage() {
             </p>
           </div>
         </section>
+
+        <StorageAlert storage={storage} />
 
         <section className="mt-6 grid gap-4 lg:grid-cols-3">
           <SummaryCard

@@ -20,15 +20,24 @@ function isAuthorized(request) {
   const configuredSecret = process.env.BOT_CONFIRM_SECRET?.trim();
 
   if (!configuredSecret) {
-    return false;
+    return "missing_secret";
   }
 
   const headerSecret = request.headers.get("x-bot-confirm-secret")?.trim();
-  return headerSecret === configuredSecret;
+  return headerSecret === configuredSecret ? "authorized" : "unauthorized";
 }
 
 export async function POST(request) {
-  if (!isAuthorized(request)) {
+  const authState = isAuthorized(request);
+
+  if (authState === "missing_secret") {
+    return NextResponse.json(
+      { ok: false, error: "bot_confirm_secret_missing" },
+      { status: 503 },
+    );
+  }
+
+  if (authState !== "authorized") {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
