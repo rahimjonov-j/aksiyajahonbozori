@@ -4,6 +4,7 @@ import {
   ANALYTICS_VISITOR_PUBLIC_COOKIE,
   createVisitorId,
   isValidVisitorId,
+  shouldTrackBrowserVisitor,
   trackVisit,
 } from "@/lib/analytics";
 
@@ -21,6 +22,12 @@ async function readPayload(request) {
 
 export async function POST(request) {
   const payload = await readPayload(request);
+  const userAgent = request.headers.get("user-agent");
+
+  if (!shouldTrackBrowserVisitor(userAgent)) {
+    return NextResponse.json({ ok: true, skipped: true, reason: "non_browser" });
+  }
+
   const existingVisitorId = request.cookies.get(ANALYTICS_VISITOR_COOKIE)?.value;
   const requestedVisitorId = isValidVisitorId(payload.visitorId)
     ? payload.visitorId
@@ -33,7 +40,7 @@ export async function POST(request) {
       pathname: payload.pathname,
       referrer: payload.referrer,
       search: payload.search,
-      userAgent: request.headers.get("user-agent"),
+      userAgent,
     });
   } catch (error) {
     trackingError = error;
