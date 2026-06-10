@@ -84,7 +84,7 @@ function HeroImage() {
     <div className="mx-auto w-[80%] max-w-sm overflow-hidden rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] md:w-full md:max-w-md md:rounded-[2rem]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/newimg.png"
+        src="/image.png"
         alt="Jahon Bozori yopiq aksiyasi"
         className="block h-auto w-full"
       />
