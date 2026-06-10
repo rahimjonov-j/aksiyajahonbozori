@@ -53,7 +53,7 @@ export default function RootLayout({
         />
         <link rel="apple-touch-icon" href="/optimized/apple-touch-icon.png" />
       </head>
-      <body className={`${inter.className} bg-black text-white antialiased`}>
+      <body className={`${inter.className} bg-transparent text-white antialiased`}>
         {children}
       </body>
     </html>

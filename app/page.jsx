@@ -1,4 +1,3 @@
-import Image from "next/image";
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import TelegramCta from "./components/TelegramCta";
 
@@ -43,7 +42,7 @@ function HeroText() {
         Jahon Bozor konkursi
       </div>
       <h1 className="mx-auto mt-3 max-w-[13ch] bg-[linear-gradient(135deg,#edc55e,#d9a520,#cf8217)] bg-clip-text text-center text-[clamp(1.9rem,8.7vw,3.15rem)] font-black uppercase leading-[1.02] tracking-normal text-transparent md:mt-5 md:max-w-[13ch] md:text-[clamp(3.2rem,5vw,5rem)] lg:mx-0 lg:text-left">
-        FARG&apos;ONADA BEPULGA BYD YUTIB OLING!
+        FARG&apos;ONADA TEKINGA DO&apos;KON YUTIB OLING!
       </h1>
       <p className="mt-3 text-[13px] font-medium text-[#b8b8b8] md:mt-5 md:text-lg">
         Jahon Bozorining yopiq aksiyasi boshlandi
@@ -55,26 +54,13 @@ function HeroText() {
 function HeroVisual() {
   return (
     <section className="w-full min-h-0 lg:col-start-2 lg:row-span-2 lg:row-start-1">
-      <div className="relative mx-auto aspect-[16/10] w-full max-w-5xl overflow-hidden rounded-[1.25rem] border border-white/10 bg-[#0b0b0b] shadow-[0_24px_80px_rgba(0,0,0,0.42)] min-[390px]:rounded-[1.5rem] md:aspect-[21/9] md:rounded-[2.2rem] lg:aspect-[16/9] lg:max-w-none">
-        <Image
-          src="/optimized/newimg-hero.webp"
+      <div className="mx-auto w-[72%] md:w-full max-w-5xl overflow-hidden rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.5)] md:rounded-[2.2rem] lg:max-w-none">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/newimg.png"
           alt="BYD Champion avtomobili"
-          fill
-          priority
-          sizes="(min-width: 1024px) 1024px, 100vw"
-          className="object-cover object-center"
+          className="block w-full h-auto"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,5,5,0.02),rgba(5,5,5,0.12)_52%,rgba(5,5,5,0.76))]" />
-
-        <div className="absolute left-2.5 top-2.5 rounded-xl border border-[#d9a520]/30 bg-black/45 px-2.5 py-1.5 backdrop-blur-sm md:left-6 md:top-6 md:rounded-2xl md:px-3 md:py-2">
-          <p className="text-[9px] font-black uppercase tracking-[0.1em] text-[#edc55e] md:text-xs md:tracking-[0.14em]">
-            Bosh sovrin
-          </p>
-          <p className="text-[8px] font-semibold text-[#b8b8b8] md:text-xs">
-            BYD avtomobili
-          </p>
-        </div>
-
       </div>
     </section>
   );
@@ -88,7 +74,7 @@ function TriggerAndTimer() {
           ⚠️
         </span>
         <p className="min-w-0 text-[9px] font-semibold leading-snug text-[#f0d7a2] min-[380px]:text-[10px] md:text-sm">
-          Faqat ro&apos;yxatdan o&apos;tganlar va ofisga kelganlar qatnashadi
+          Faqat ro&apos;yxatdan o&apos;tganlar va do&apos;kon harid qilganlar qatnashadi
         </p>
       </div>
       <div className="flex shrink-0 gap-1">
