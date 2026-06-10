@@ -58,7 +58,7 @@ function writePendingOpenSignal(value) {
   window.sessionStorage.setItem(TELEGRAM_PENDING_KEY, JSON.stringify(value));
 }
 
-export default function TelegramCta({ botUsername, startPrefix }) {
+export default function TelegramCta({ botUsername, startPrefix, className }) {
   const visitorId = useMemo(() => {
     if (typeof window === "undefined") {
       return "";
@@ -153,9 +153,9 @@ export default function TelegramCta({ botUsername, startPrefix }) {
     <a
       href={href}
       onClick={handleClick}
-      className="w-full rounded-[1.35rem] bg-[linear-gradient(135deg,#34d058,#16a34a,#0f7a34)] px-5 py-4 text-center text-[13px] font-black uppercase tracking-[0.06em] text-white shadow-[0_18px_44px_rgba(22,163,74,0.38)] transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 animate-pulse min-[380px]:text-sm md:max-w-sm md:py-5 md:text-lg md:tracking-[0.08em]"
+      className={className ?? "w-full rounded-[1.35rem] bg-[linear-gradient(135deg,#34d058,#16a34a,#0f7a34)] px-5 py-4 text-center text-[13px] font-black uppercase tracking-[0.06em] text-white shadow-[0_18px_44px_rgba(22,163,74,0.38)] transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 animate-pulse min-[380px]:text-sm md:max-w-sm md:py-5 md:text-lg md:tracking-[0.08em]"}
     >
-      AKSIYADA QATNASHISH
+      RO&apos;YXATDAN O&apos;TISH
     </a>
   );
 }
