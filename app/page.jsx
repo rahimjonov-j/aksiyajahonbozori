@@ -1,8 +1,4 @@
 import AnalyticsTracker from "./components/AnalyticsTracker";
-import TelegramCta from "./components/TelegramCta";
-
-const botUsername = "Jaxon_bozor_Bot";
-const botStartPrefix = "ref_1256520272";
 
 function Header() {
   return (
@@ -101,13 +97,16 @@ function HeroImage() {
 function Cta() {
   return (
     <div className="flex w-full flex-col items-center gap-2">
-      <TelegramCta
-        botUsername={botUsername}
-        startPrefix={botStartPrefix}
-        className="w-full rounded-[1.35rem] bg-[linear-gradient(135deg,#edc55e,#d9a520,#b8841a)] px-5 py-4 text-center text-[13px] font-black uppercase tracking-[0.06em] text-[#050505] shadow-[0_18px_44px_rgba(217,165,32,0.35)] transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 animate-pulse min-[380px]:text-sm md:max-w-sm md:py-5 md:text-lg md:tracking-[0.08em]"
-      />
+      <a
+        href="https://t.me/jahonbozorivodiy"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full animate-pulse rounded-[1.35rem] bg-[linear-gradient(135deg,#edc55e,#d9a520,#b8841a)] px-5 py-4 text-center text-[13px] font-black uppercase tracking-[0.06em] text-[#050505] shadow-[0_18px_44px_rgba(217,165,32,0.35)] transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 min-[380px]:text-sm md:max-w-sm md:py-5 md:text-lg md:tracking-[0.08em]"
+      >
+        QO&apos;SHILISH
+      </a>
       <p className="text-[10px] font-medium text-[#8f8f8f] md:text-xs">
-        Telegram orqali ro&apos;yxatdan o&apos;ting
+        Telegram kanalga qo&apos;shiling
       </p>
     </div>
   );
