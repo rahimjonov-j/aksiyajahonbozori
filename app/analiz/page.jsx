@@ -271,7 +271,7 @@ export default async function AnalyticsPage() {
   }));
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(217,165,32,0.14),transparent_30%),#050505] px-4 py-8 text-white sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#050505] [background-image:radial-gradient(circle_at_top,rgba(217,165,32,0.14),transparent_30%)] px-4 py-8 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <section className="relative overflow-hidden rounded-[2.25rem] border border-[#d9a520]/20 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(217,165,32,0.08),rgba(255,255,255,0.02))] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.35)] sm:p-8">
           <div className="absolute -right-10 top-0 h-40 w-40 rounded-full bg-[#d9a520]/10 blur-3xl" />
