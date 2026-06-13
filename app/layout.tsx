@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const inter = Inter({
@@ -52,6 +53,18 @@ export default function RootLayout({
           media="(prefers-color-scheme: dark)"
         />
         <link rel="apple-touch-icon" href="/optimized/apple-touch-icon.png" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-4YHB475003"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-4YHB475003');
+          `}
+        </Script>
       </head>
       <body className={`${inter.className} text-white antialiased`}>
         {children}
