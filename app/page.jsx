@@ -1,29 +1,5 @@
 import AnalyticsTracker from "./components/AnalyticsTracker";
-
-function Header() {
-  return (
-    <header className="flex shrink-0 justify-center pt-4 md:pt-6">
-      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#d9a520]/30 bg-white/[0.04] py-1.5 pl-1.5 pr-3 shadow-[0_14px_45px_rgba(0,0,0,0.32)] backdrop-blur-md md:gap-2.5 md:pr-4">
-        <div className="h-7 w-7 shrink-0 overflow-hidden rounded-full bg-white md:h-8 md:w-8">
-          <picture>
-            <source
-              srcSet="/optimized/logo-dark.webp"
-              media="(prefers-color-scheme: dark)"
-            />
-            <img
-              src="/optimized/logo-light.webp"
-              alt="Jahon Bozori"
-              className="h-full w-full object-contain p-1"
-            />
-          </picture>
-        </div>
-        <span className="truncate text-[9px] font-black uppercase tracking-[0.08em] text-[#d9a520] min-[380px]:text-[10px] md:text-sm md:tracking-[0.12em]">
-          YevroOsiyo - xalqaro savdo markazi
-        </span>
-      </div>
-    </header>
-  );
-}
+import JoinButton from "./components/JoinButton";
 
 function EventDateBadge() {
   return (
@@ -81,10 +57,10 @@ function HeroTitle() {
 
 function HeroImage() {
   return (
-    <div className="mx-auto w-[80%] max-w-sm overflow-hidden rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] md:w-full md:max-w-md md:rounded-[2rem]">
+    <div className="mx-auto w-full overflow-hidden rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] md:max-w-md md:rounded-[2rem]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/image.png"
+        src="/prize.png"
         alt="Jahon Bozori yopiq aksiyasi"
         className="block h-auto w-full"
       />
@@ -93,24 +69,6 @@ function HeroImage() {
 }
 
 
-
-function Cta() {
-  return (
-    <div className="flex w-full flex-col items-center gap-2">
-      <a
-        href="https://t.me/jahonbozorivodiy"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-full animate-pulse rounded-[1.35rem] bg-[linear-gradient(135deg,#edc55e,#d9a520,#b8841a)] px-5 py-4 text-center text-[13px] font-black uppercase tracking-[0.06em] text-[#050505] shadow-[0_18px_44px_rgba(217,165,32,0.35)] transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 min-[380px]:text-sm md:max-w-sm md:py-5 md:text-lg md:tracking-[0.08em]"
-      >
-        QO&apos;SHILISH
-      </a>
-      <p className="text-[10px] font-medium text-[#8f8f8f] md:text-xs">
-        Telegram kanalga qo&apos;shiling
-      </p>
-    </div>
-  );
-}
 
 function TrustInfo() {
   return (
@@ -131,19 +89,17 @@ function TrustInfo() {
 
 export default function Home() {
   return (
-    <main className="min-h-[100dvh] bg-[#050505] text-[#f5f5f5]">
+    <main className="h-[100dvh] overflow-hidden bg-[#050505] text-[#f5f5f5]">
       <AnalyticsTracker />
-      <div className="mx-auto flex min-h-[100dvh] w-full max-w-[480px] flex-col px-4 sm:px-6">
-        <Header />
-
-        <div className="flex flex-1 flex-col items-center justify-center gap-5 py-6 md:gap-7 md:py-8">
+      <div className="mx-auto flex h-[100dvh] w-full max-w-[480px] flex-col px-4 sm:px-6">
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 py-4 md:gap-7 md:py-8">
           <EventDateBadge />
           <HeroTitle />
           <HeroImage />
           <div className="mx-auto w-full max-w-xs rounded-2xl border border-[#d9a520]/30 bg-[#d9a520]/[0.08] px-4 py-3 text-center text-[12px] font-semibold leading-snug text-[#f0d7a2] md:max-w-sm md:text-sm">
             18-iyun kuni <span className="font-black text-[#edc55e]">soat 20:00 da</span> bo&apos;lib o&apos;tadigan Jahon Bozori taqdimotiga online qo&apos;shiling!
           </div>
-          <Cta />
+          <JoinButton />
         </div>
 
         <TrustInfo />
